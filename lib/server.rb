@@ -1,10 +1,9 @@
-require 'socket'
-require 'pry'
+require './lib/setup_reqs'
 
 class Server
   attr_accessor :client, :request_counter
   attr_reader :request_lines
-
+# while true
   def initialize
     @client = TCPServer.new(9292).accept
     @request_counter = 0
@@ -12,6 +11,7 @@ class Server
     while line = client.gets and !line.chomp.empty? #assign while, loop through
       request_lines << line.chomp
     end
+    respond
   end
 
  #   def request
@@ -39,21 +39,28 @@ class Server
  Origin: #{request_lines[1].split[1][0..8]}
  Accept: #{request_lines[4].split[1]}
      </pre>"
+#Host: #{request_lines[1].split[1].split(":")[0]}
    end
 
   def respond
     output_message = "<pre> Hello, World! (#{request_counter}) </pre>"
+    @request_counter += 1
+    #why does this have to be an IVar? In line 45 it isn't, but it works
     client.puts output_message
   end
 
   def close
     client.close
   end
+# end
 end
 
 # binding.pry
 server = Server.new
-server.respond
+# server.option
+# server.respond
+# server.respond
+# server.respond
 # server.request
 # server.diagnostics
 # server.message
