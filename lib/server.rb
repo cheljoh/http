@@ -1,12 +1,12 @@
 require_relative 'setup_reqs'
 
 class Server
-  attr_accessor :request_counter
   attr_reader :server
 
   def initialize
     @server = TCPServer.new(9292)
     @request_counter = 0
+    @hello_counter = 0
   end
 
 
@@ -30,12 +30,12 @@ class Server
 
   def respond(client, request_lines, user_input)
     @request_counter += 1
-    output_message = "<pre> Hello, World! (#{request_counter}) </pre>"
     output_diagnostics = diagnostics(client, request_lines)
     if user_input == "/"
       client.puts(output_diagnostics)
     elsif user_input == "/hello"
-      client.puts(output_message)
+      client.puts(hello_message)
+      @hello_counter += 1
     elsif user_input == "/datetime"
       client.puts(date)
     elsif user_input == "/shutdown"
@@ -43,6 +43,10 @@ class Server
     end
 
     #why does this have to be an IVar? In line 45 it isn't, but it works?
+  end
+
+  def hello_message
+      "<pre> Hello, World! (#{@hello_counter}) </pre>" #have hello counter
   end
 
   def date
