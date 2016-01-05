@@ -1,72 +1,76 @@
-require './lib/setup_reqs'
+require_relative 'setup_reqs'
 
 class Server
-  attr_accessor :client, :request_counter
-  attr_reader :request_lines
-# while true
+  attr_accessor :request_counter
+  attr_reader :server
+
   def initialize
-    @client = TCPServer.new(9292).accept
+    @server = TCPServer.new(9292)
     @request_counter = 0
-    @request_lines = []
-    while line = client.gets and !line.chomp.empty? #assign while, loop through
-      request_lines << line.chomp
+  end
+
+
+  def request
+    loop do
+      puts "Enter what you want to do"
+      user_input = gets.chomp
+
+      client = server.accept
+
+      request_lines = []
+      while line = client.gets and !line.chomp.empty?
+        request_lines << line.chomp
+      end
+
+      respond(client, request_lines, user_input)
+      client.close
+      break if user_input == "/shutdown"
     end
-    respond
   end
 
- #   def request
- #     request_counter += 1
- # #     client.puts "<pre>
- # # Verb: #{request_lines[0].split[0]}
- # # Path: #{request_lines[0].split[1]}
- # # Protocol: #{request_lines[0].split[2]}
- # # Host: #{request_lines[1].split[1][0..8]}
- # # Port: #{request_lines[1].split[1][10..13]}
- # # Origin: #{request_lines[1].split[1][0..8]}
- # # Accept: #{request_lines[4].split[1]}
- # #     </pre>"
- #     request_lines
- #   end
-
-   def diagnostics
-     request_lines = request
-     client.puts "<pre>
- Verb: #{request_lines[0].split[0]}
- Path: #{request_lines[0].split[1]}
- Protocol: #{request_lines[0].split[2]}
- Host: #{request_lines[1].split[1][0..8]}
- Port: #{request_lines[1].split[1][10..13]}
- Origin: #{request_lines[1].split[1][0..8]}
- Accept: #{request_lines[4].split[1]}
-     </pre>"
-#Host: #{request_lines[1].split[1].split(":")[0]}
-   end
-
-  def respond
-    output_message = "<pre> Hello, World! (#{request_counter}) </pre>"
+  def respond(client, request_lines, user_input)
     @request_counter += 1
-    #why does this have to be an IVar? In line 45 it isn't, but it works
-    client.puts output_message
+    output_message = "<pre> Hello, World! (#{request_counter}) </pre>"
+    output_diagnostics = diagnostics(client, request_lines)
+    if user_input == "/"
+      client.puts(output_diagnostics)
+    elsif user_input == "/hello"
+      client.puts(output_message)
+    elsif user_input == "/datetime"
+      client.puts(date)
+    elsif user_input == "/shutdown"
+      client.puts(shutdown)
+    end
+
+    #why does this have to be an IVar? In line 45 it isn't, but it works?
   end
 
-  def close
-    client.close
+  def date
+    Time.now.strftime("%I:%M%p on %A, %B %d, %Y")
   end
-# end
+
+  def shutdown
+    "Total requests: #{@request_counter}"
+  end
+
+  def diagnostics(client, request_lines)
+    "<pre>
+Verb: #{request_lines[0].split[0]}
+Path: #{request_lines[0].split[1]}
+Protocol: #{request_lines[0].split[2]}
+Host: #{request_lines[1].split[1].split(":")[0]}
+Port: #{request_lines[1].split[1].split(":")[1]}
+Origin: #{request_lines[1].split[1].split(":")[0]}
+Accept: #{request_lines[4].split[1]}
+    </pre>"
+#Host: #{request_lines[1].split[1].split(":")[0]}
+  end
+
 end
 
 # binding.pry
 server = Server.new
-# server.option
-# server.respond
-# server.respond
-# server.respond
-# server.request
-# server.diagnostics
-# server.message
-# server.request
-# server.message
-# server.close
+server.request
 
 
 # class Server
