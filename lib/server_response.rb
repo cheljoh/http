@@ -7,41 +7,57 @@ class ServerResponse
     @hello_counter = 0
   end
 
-  # def headers(request_lines)
-  #   response = "<pre>" + request_lines.join("\n") + "</pre>"
-  #   output = "<html><head></head><body>#{response}</body></html>"
-  #   headers = ["http/1.1 200 ok",
-  #     "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
-  #     "server: ruby",
-  #     "content-type: text/html; charset=iso-8859-1",
-  #     "content-length: #{output.length}\r\n\r\n"].join("\r\n")
-  # end
+  def headers(output) #need to have response to compute output
+    ["http/1.1 200 ok",
+      "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
+      "server: ruby",
+      "content-type: text/html; charset=iso-8859-1",
+      "content-length: #{output.length}\r\n\r\n"].join("\r\n")
+  end
 
-  def respond(client, parser)
-    @request_counter += 1 #unless user_input == "/shutdown"
-    #client.puts headers(request_lines)
-    output_diagnostics = diagnostics(client, parser.full_request)
-    if parser.path == "/"
-      client.puts(output_diagnostics)
-    elsif parser.path == "/hello"
-      client.puts(hello_message)
-      @hello_counter += 1
-    elsif parser.path == "/datetime"
-      client.puts(date)
-    elsif parser.path == "/shutdown"
-      client.puts(shutdown)
-    elsif parser.path == "/word_search"
-      client.puts(word_search(parser.value))
-    elsif parser.path == "/game" && parser.verb == "GET"
-      # client.puts(game_get)
-      client.puts(@game.game_get)
-    elsif parser.path == "/game" && parser.verb == "POST"
-      # client.puts(game_post)
-      client.puts(@game.game_post(parser.value))
-    elsif parser.path == "/start_game" && parser.verb == "POST"
-      @game = NumberGame.new(client)
-      client.puts "Good Luck!"
+  def respond(client, parsed)
+    @request_counter += 1
+    if parsed.verb == "GET"
+      response = response_get(client, parsed)
+    elsif parsed.verb == "POST"
+      response = response_post(client, parsed)
     end
+
+    output = "<html><head></head><body>#{response}</body></html>"
+    header = headers(output)
+
+    client.puts header
+    client.puts output
+  end
+
+  def response_get(client, parsed)
+    response = ""
+    output_diagnostics = diagnostics(client, parsed.full_request)
+    if parsed.path == "/"
+      response = output_diagnostics
+    elsif parsed.path == "/hello"
+      response = hello_message
+      @hello_counter += 1
+    elsif parsed.path == "/datetime"
+      response = date
+    elsif parsed.path == "/shutdown"
+      response = shutdown
+    elsif parsed.path == "/word_search"
+      response = word_search(parsed.value)
+    elsif parsed.path == "/game"
+      response = @game.game_get
+    end
+    response
+  end
+
+  def response_post(client, parsed)
+    if user_input == "/game"
+        response = @game.game_post(parsed.full_params)
+    elsif user_input == "/start_game"
+        @game = NumberGame.new(client)
+        response = "Good Luck!"
+    end
+    response
   end
 
   def hello_message
