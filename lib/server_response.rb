@@ -95,7 +95,7 @@ Protocol: #{request_lines[0].split[2]}
 Host: #{request_lines[1].split[1].split(":")[0]}
 Port: #{request_lines[1].split[1].split(":")[1]}
 Origin: #{request_lines[1].split[1].split(":")[0]}
-Accept: #{request_lines[4].split[1]}
+Accept: #{request_lines[4].split[1] if !request_lines[4].nil?}
     </pre>"
   end
 end

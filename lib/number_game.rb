@@ -10,7 +10,7 @@ class NumberGame
   end
 
   def game_post(input_params)
-    param = input_params.split("=")[0]
+    # param = input_params.split("=")[0]
     @guess = input_params.split("=")[1]
     @guess_counter += 1
 

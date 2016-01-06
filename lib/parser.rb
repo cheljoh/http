@@ -4,11 +4,11 @@ class Parser
 
   def initialize(request_lines)
     @full_request = request_lines
-    @verb = @full_request[0].split[0]
-    @path = @full_request[0].split[1].split("?")[0]
-    @full_params = @full_request[0].split[1]
-    @parameter = @full_request[0].split[1].split("?")[1].split("=")[0] if !@full_request[0].split[1].split("?")[1].nil?
-    @value = @full_request[0].split[1].split("?")[1].split("=")[1] if !@full_request[0].split[1].split("?")[1].nil?
+    @verb = request_lines[0].split[0]
+    @path = request_lines[0].split[1].split("?")[0]
+    @full_params = request_lines[0].split[1]
+    @parameter = request_lines[0].split[1].split("?")[1].split("=")[0] if !request_lines[0].split[1].split("?")[1].nil?
+    @value = request_lines[0].split[1].split("?")[1].split("=")[1] if !request_lines[0].split[1].split("?")[1].nil?
   end
 
 end
