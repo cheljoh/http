@@ -49,9 +49,9 @@ class ServerResponse
   end
 
   def response_post(client, parsed)
-    if user_input == "/game"
+    if parsed.path == "/game"
         response = @game.game_post(parsed.full_params)
-    elsif user_input == "/start_game"
+    elsif parsed.path == "/start_game"
         @game = NumberGame.new(client)
         response = "Good Luck!"
     end
