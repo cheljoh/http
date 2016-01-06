@@ -14,8 +14,6 @@ class NumberGame
     @guess = input_params.split("=")[1]
     @guess_counter += 1
 
-    # `server.get("http://127.0.0.1:9292/game`
-
     game_get #need to figure out how to redirect user, post to get
   end
 

@@ -15,9 +15,6 @@ class ServerRequest
         request_lines << line.chomp
       end
       parsed = Parser.new(request_lines)
-      # user_input = request_lines[0].split[1].split("?")[0]
-      # input_params = request_lines[0].split[1].split("?")[1]
-      # input_verb = request_lines[0].split[0]
 
       @send_response.respond(client, parsed)
       client.close
@@ -25,7 +22,3 @@ class ServerRequest
     end
   end
 end
-
-
-# parser.new(request_lines)
-# parser would then split the request lines into the input(path), params (param/value), and verb
