@@ -17,28 +17,28 @@ class ServerResponse
   #     "content-length: #{output.length}\r\n\r\n"].join("\r\n")
   # end
 
-  def respond(client, request_lines, user_input, input_params, verb)
-    @request_counter += 1
+  def respond(client, parser)
+    @request_counter += 1 #unless user_input == "/shutdown"
     #client.puts headers(request_lines)
-    output_diagnostics = diagnostics(client, request_lines)
-    if user_input == "/"
+    output_diagnostics = diagnostics(client, parser.full_request)
+    if parser.path == "/"
       client.puts(output_diagnostics)
-    elsif user_input == "/hello"
+    elsif parser.path == "/hello"
       client.puts(hello_message)
       @hello_counter += 1
-    elsif user_input == "/datetime"
+    elsif parser.path == "/datetime"
       client.puts(date)
-    elsif user_input == "/shutdown"
+    elsif parser.path == "/shutdown"
       client.puts(shutdown)
-    elsif user_input == "/word_search"
-      client.puts(word_search(input_params))
-    elsif user_input == "/game" && verb == "GET"
+    elsif parser.path == "/word_search"
+      client.puts(word_search(parser.value))
+    elsif parser.path == "/game" && parser.verb == "GET"
       # client.puts(game_get)
       client.puts(@game.game_get)
-    elsif user_input == "/game" && verb == "POST"
+    elsif parser.path == "/game" && parser.verb == "POST"
       # client.puts(game_post)
-      client.puts(@game.game_post(input_params))
-    elsif user_input == "/start_game" && verb == "POST"
+      client.puts(@game.game_post(parser.value))
+    elsif parser.path == "/start_game" && parser.verb == "POST"
       @game = NumberGame.new(client)
       client.puts "Good Luck!"
     end
@@ -56,20 +56,20 @@ class ServerResponse
     "Total requests: #{@request_counter}"
   end
 
-  def word_search(input_params)
-    param = input_params.split("=")[0]
-    value = input_params.split("=")[1]
-    dictionary = File.read("/usr/share/dict/words").split
-    if dictionary.include?(value)
-      "#{value.upcase} is a known word"
+  def word_search(word)
+
+    if valid_word?(word)
+      "#{word.upcase} is a known word"
     else
-      "#{value.upcase} is not a known word"
+      "#{word.upcase} is not a known word"
     end
+
   end
 
-  # def valid_word?
-  #
-  # end
+  def valid_word?(word)
+    dictionary = File.read("/usr/share/dict/words").split
+    dictionary.include?(word)
+  end
 
   def diagnostics(client, request_lines)
     "<pre>
