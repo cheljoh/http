@@ -7,42 +7,96 @@ class ServerResponse
     @hello_counter = 0
   end
 
-  # def headers(request_lines)
-  #   response = "<pre>" + request_lines.join("\n") + "</pre>"
-  #   output = "<html><head></head><body>#{response}</body></html>"
-  #   headers = ["http/1.1 200 ok",
-  #     "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
-  #     "server: ruby",
-  #     "content-type: text/html; charset=iso-8859-1",
-  #     "content-length: #{output.length}\r\n\r\n"].join("\r\n")
-  # end
+  def headers(output) #need to have response to compute output
+    ["http/1.1 200 ok",
+      "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
+      "server: ruby",
+      "content-type: text/html; charset=iso-8859-1",
+      "content-length: #{output.length}\r\n\r\n"].join("\r\n")
+  end
+
 
   def respond(client, request_lines, user_input, input_params, verb)
     @request_counter += 1
-    #client.puts headers(request_lines)
+    if verb == "GET"
+      response = response_get(client, request_lines, user_input, input_params)
+    elsif verb == "POST"
+      response = response_post(client, user_input, input_params)
+    end
+
+    output = "<html><head></head><body>#{response}</body></html>"
+    header = headers(output)
+
+    client.puts header
+    client.puts output
+  end
+
+  def response_get(client, request_lines, user_input, input_params)
+    response = ""
     output_diagnostics = diagnostics(client, request_lines)
     if user_input == "/"
-      client.puts(output_diagnostics)
+      response = output_diagnostics
     elsif user_input == "/hello"
-      client.puts(hello_message)
+      response = hello_message
       @hello_counter += 1
     elsif user_input == "/datetime"
-      client.puts(date)
+      response = date
     elsif user_input == "/shutdown"
-      client.puts(shutdown)
+      response = shutdown
     elsif user_input == "/word_search"
-      client.puts(word_search(input_params))
-    elsif user_input == "/game" && verb == "GET"
-      # client.puts(game_get)
-      client.puts(@game.game_get)
-    elsif user_input == "/game" && verb == "POST"
-      # client.puts(game_post)
-      client.puts(@game.game_post(input_params))
-    elsif user_input == "/start_game" && verb == "POST"
-      @game = NumberGame.new(client)
-      client.puts "Good Luck!"
+      response = word_search(input_params)
+    elsif user_input == "/game"
+      response = @game.game_get
     end
+
+    response
   end
+
+  def response_post(client, user_input, input_params)
+    if user_input == "/game"
+        response = @game.game_post(input_params)
+    elsif user_input == "/start_game"
+        @game = NumberGame.new(client)
+        response = "Good Luck!"
+    end
+    response
+  end
+  #
+  # def respond(client, request_lines, user_input, input_params, verb)
+  #   @request_counter += 1
+  #   client.puts headers(request_lines)
+  #   if verb == "GET"
+  #     respond_get(client, request_lines, user_input, input_params)
+  #   elsif verb == "POST"
+  #     respond_post(client, user_input, input_params)
+  #   end
+  # end
+  #
+  # def response_get(client, request_lines, user_input, input_params)
+  #   output_diagnostics = diagnostics(client, request_lines)
+  #   if user_input == "/"
+  #     client.puts(output_diagnostics)
+  #   elsif user_input == "/hello"
+  #     client.puts(hello_message)
+  #     @hello_counter += 1
+  #   elsif user_input == "/datetime"
+  #     client.puts(date)
+  #   elsif user_input == "/shutdown"
+  #     client.puts(shutdown)
+  #   elsif user_input == "/word_search"
+  #     client.puts(word_search(input_params))
+  #   elsif user_input == "/game"
+  #     client.puts(@game.game_get)
+  #   end
+  # end
+  #
+  # def response_post(client, user_input, input_params)
+  #   if user_input == "/game"
+  #     client.puts(@game.game_post(input_params))
+  #   elsif user_input == "/start_game"
+  #     start_game(client)
+  #   end
+  # end
 
   def hello_message
       "<pre> Hello, World! (#{@hello_counter}) </pre>" #have hello counter
@@ -66,10 +120,6 @@ class ServerResponse
       "#{value.upcase} is not a known word"
     end
   end
-
-  # def valid_word?
-  #
-  # end
 
   def diagnostics(client, request_lines)
     "<pre>
