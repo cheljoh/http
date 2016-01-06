@@ -1,4 +1,5 @@
 require_relative 'number_game'
+require_relative 'setup_reqs'
 
 class ServerResponse
 
@@ -7,8 +8,20 @@ class ServerResponse
     @hello_counter = 0
   end
 
-  def headers(output) #need to have response to compute output
-    ["http/1.1 200 ok",
+  def default_headers(output) #need to have response to compute output
+  #def headers(output, code="200 ok", location="http://127.0.0.1:9292")
+     ["http/1.1 200 ok",
+      "location: http://127.0.0.1:9292",
+      "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
+      "server: ruby",
+      "content-type: text/html; charset=iso-8859-1",
+      "content-length: #{output.length}\r\n\r\n"].join("\r\n")
+  end
+
+  def redirect_headers(output) #need to have response to compute output
+  #def headers(output, code="200 ok", location="http://127.0.0.1:9292")
+     ["http/1.1 302 Found",
+      "location: http://127.0.0.1/game",
       "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
       "server: ruby",
       "content-type: text/html; charset=iso-8859-1",
@@ -23,7 +36,8 @@ class ServerResponse
       response = response_post(client, parsed)
     end
     output = "<html><head></head><body>#{response}</body></html>"
-    header = headers(output)
+    header = default_headers(output)
+    header = redirect_headers(output) if parsed.verb == "POST" && parsed.path == "/game"
     client.puts header
     client.puts output
   end
@@ -50,7 +64,7 @@ class ServerResponse
 
   def response_post(client, parsed)
     if parsed.path == "/game"
-        response = @game.game_post(parsed.full_params)
+      response = @game.game_post(parsed.full_params)
     elsif parsed.path == "/start_game"
         @game = NumberGame.new(client)
         response = "Good Luck!"
