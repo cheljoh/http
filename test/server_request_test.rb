@@ -1,20 +1,13 @@
-require_relative 'test_helper' #don't need to have travis CI
+require_relative 'test_helper'
 
 class ServerRequestTest < Minitest::Test
 
-  def test_hello_world
-    client = Hurley::Client.new("http://127.0.0.1:9292")
-    response = client.get("/hello")
-    assert_equal "<pre> Hello, World!", response.body[25..43]
+  def test_does_it_make_request
+
   end
 
-  def test_root
-    client = Hurley::Client.new("http://127.0.0.1:9292")
-    response = client.get("/")
+  def does_it_shutdown
 
-    expected = "<pre>\nVerb: GET"
-
-    assert_equal expected, response.body[25..39]
   end
 
 end

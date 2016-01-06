@@ -1,4 +1,4 @@
-require_relative 'test_helper' #don't need to have travis CI
+require_relative 'test_helper' 
 
 class ServerTest < Minitest::Test
   def test_response
@@ -16,5 +16,5 @@ class ServerTest < Minitest::Test
     client = Hurley::Client.new("http://127.0.0.1:9292")
     assert_equal 9292, client.port
   end
-  
+
 end
