@@ -22,10 +22,8 @@ class ServerResponse
     elsif parsed.verb == "POST"
       response = response_post(client, parsed)
     end
-
     output = "<html><head></head><body>#{response}</body></html>"
     header = headers(output)
-
     client.puts header
     client.puts output
   end
