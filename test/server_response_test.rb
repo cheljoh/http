@@ -1,6 +1,6 @@
 require_relative 'test_helper'
 
-class ServerRequestTest < Minitest::Test
+class ServerResponseTest < Minitest::Test
 
   def test_hello_world
     client = Hurley::Client.new("http://127.0.0.1:9292")
@@ -44,14 +44,6 @@ Host: Hurley"
     expected = "YOLO is not a known word"
 
     assert_equal expected, response.body[25..48]
-  end
-
-  def test_shutdown
-    skip
-    client = Hurley::Client.new("http://127.0.0.1:9292")
-    response = client.get("/shutdown")
-
-    assert_equal "Total requests:", response.body[25..39]
   end
 
 end
