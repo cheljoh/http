@@ -1,20 +1,28 @@
 class NumberGame
 
+  attr_accessor :guess
+
   def initialize(client)
     @guess_counter = 0
-    @guess = 123
+    @guess = 0
   end
 
   def game_get
-    "You have made #{@guess_counter} guesses and your guess of #{@guess} was too ___"
+    guess_result = compare_numbers
+    "You have made #{@guess_counter} guesses and your guess of #{guess} was #{guess_result}"
   end
 
   def game_post(input_params)
-    # param = input_params.split("=")[0]
     @guess = input_params.split("=")[1]
     @guess_counter += 1
+  end
 
-    game_get #need to figure out how to redirect user, post to get
+  def compare_numbers
+    number_to_guess = "88"
+    value = "high" if guess > number_to_guess
+    value = "low" if guess < number_to_guess
+    value = "just right! Congrats!" if guess == number_to_guess
+    value
   end
 
 end
