@@ -3,7 +3,7 @@ require_relative 'test_helper'
 class ServerRequestTest < Minitest::Test
 
   def test_does_it_make_request
-    skip
+    skip #server request true?
   end
 
   def test_does_it_shutdown

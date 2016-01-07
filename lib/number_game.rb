@@ -5,6 +5,7 @@ class NumberGame
   def initialize(client)
     @guess_counter = 0
     @guess = 0
+    @target = rand(10).to_s
   end
 
   def game_get
@@ -18,18 +19,8 @@ class NumberGame
   end
 
   def compare_numbers
-    number_to_guess = "88"
-    value = "high" if guess > number_to_guess
-    value = "low" if guess < number_to_guess
-    value = "just right! Congrats!" if guess == number_to_guess
-    value
+    return = "high" if guess > @target
+    return "low" if guess < @target
+    return "just right! Congrats!" if guess == @target
   end
-
-  # def compare_numbers
-  #   number_to_guess = "88"
-  #   "high" if guess > number_to_guess
-  #   "low" if guess < number_to_guess
-  #   "just right! Congrats!" if guess == number_to_guess
-  # end
-  #
 end
