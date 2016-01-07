@@ -25,4 +25,11 @@ class NumberGame
     value
   end
 
+  # def compare_numbers
+  #   number_to_guess = "88"
+  #   "high" if guess > number_to_guess
+  #   "low" if guess < number_to_guess
+  #   "just right! Congrats!" if guess == number_to_guess
+  # end
+  #
 end

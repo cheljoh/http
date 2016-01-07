@@ -14,6 +14,15 @@ class ServerResponse
     else
       response_code, location = "http/1.1 200 ok", "http://127.0.0.1:9292"
     end
+
+    # if redirect
+    #   response_code = "http/1.1 302 Found"
+    #   location = "http://127.0.0.1:9292/game"
+    # else
+    #   response_code = "http/1.1 200 ok"
+    #   location = "http://127.0.0.1:9292"
+    # end
+
      ["#{response_code}",
       "location: #{location}",
       "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
