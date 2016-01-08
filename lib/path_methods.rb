@@ -6,7 +6,8 @@ class PathMethods
   end
 
   def date
-    Time.now.strftime("%I:%M%p on %A, %B %d, %Y")
+    time = Time.now.strftime("%I:%M%p on %A, %B %d, %Y")
+    "The time is now #{time}."
   end
 
   def shutdown(request_counter)

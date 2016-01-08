@@ -19,7 +19,7 @@ class PathMethodsTest < Minitest::Test
   def test_datetime
     client = Hurley::Client.new("http://127.0.0.1:9292")
     response = client.get("/datetime")
-    assert_equal "2016", response.body[58..61]
+    assert_equal "The time is now", response.body[25..39]
   end
 
   def test_word_search_known_word
