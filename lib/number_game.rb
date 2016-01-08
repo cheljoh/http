@@ -19,7 +19,7 @@ class NumberGame
   end
 
   def compare_numbers
-    return = "high" if guess > @target
+    return "high" if guess > @target
     return "low" if guess < @target
     return "just right! Congrats!" if guess == @target
   end

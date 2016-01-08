@@ -6,7 +6,7 @@ class ServerResponse
 attr_reader :path_methods
   def initialize
     @request_counter = 0
-    @hello_counter = 0
+    @hello_counter = -1
     @path_methods = PathMethods.new
   end
 
