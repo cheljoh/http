@@ -1,49 +1,31 @@
 require_relative 'test_helper'
 
+#run file individually
+#run with new server
 class ServerResponseTest < Minitest::Test
 
-  def test_hello_world
+  def test_attempt_guess_when_game_has_not_started
     client = Hurley::Client.new("http://127.0.0.1:9292")
-    response = client.get("/hello")
-    assert_equal "Hello, World!", response.body[31..43]
+    response = client.post("/game?guess=8")
+    assert_equal "Please start a game", response.body[25..43]
   end
 
-  def test_root
+  def test_attempt_to_see_game_results_when_game_has_not_started
     client = Hurley::Client.new("http://127.0.0.1:9292")
-    response = client.get("/")
-
-    expected =
-"Verb: GET
-Path: /
-Protocol: HTTP/1.1
-Host: Hurley"
-
-    assert_equal expected, response.body[31..79]
+    response = client.get("/game")
+    assert_equal "Please start a game", response.body[25..43]
   end
 
-  def test_datetime
+  def test_bad_path_get
     client = Hurley::Client.new("http://127.0.0.1:9292")
-    response = client.get("/datetime")
-
-    assert_equal "2016", response.body[59..62]
+    response = client.get("/laksjda;kldjas")
+    assert_equal "Wrong path, sorry!", response.body[25..42]
   end
 
-  def test_word_search_known_word
+  def test_bad_path_post
     client = Hurley::Client.new("http://127.0.0.1:9292")
-    response = client.get("/word_search?word=pizza")
-
-    expected = "PIZZA is a known word"
-
-    assert_equal expected, response.body[25..45]
-  end
-
-  def test_word_search_unknown_word
-    client = Hurley::Client.new("http://127.0.0.1:9292")
-    response = client.get("/word_search?word=yolo")
-
-    expected = "YOLO is not a known word"
-
-    assert_equal expected, response.body[25..48]
+    response = client.post("/laksjda;kldjas")
+    assert_equal "Wrong path, sorry!", response.body[25..42]
   end
 
 end

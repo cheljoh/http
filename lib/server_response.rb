@@ -8,6 +8,7 @@ attr_reader :path_methods
     @request_counter = 0
     @hello_counter = -1
     @path_methods = PathMethods.new
+    @game = nil
   end
 
   def headers(output, redirect)
@@ -58,18 +59,34 @@ attr_reader :path_methods
       path_methods.shutdown(@request_counter)
     elsif parsed.path == "/word_search"
       path_methods.word_search(parsed.value)
-    elsif parsed.path == "/game"
-      @game.game_get
+    elsif parsed.path == "/game" && @game.nil?
+        prompt_start_game
+    elsif parsed.path == "/game" && !@game.nil?
+        @game.game_get
+    else
+      bad_path_message
     end
   end
 
   def response_post(client, parsed)
-    if parsed.path == "/game"
+    if parsed.path == "/game" && @game.nil?
+      prompt_start_game
+    elsif parsed.path == "/game" && !@game.nil?
       @game.game_post(parsed.full_params)
     elsif parsed.path == "/start_game"
-      @game = NumberGame.new(client)
+      @game = NumberGame.new
       "Good Luck!"
+    else
+      bad_path_message
     end
+  end
+
+  def prompt_start_game
+    "Please start a game"
+  end
+
+  def bad_path_message
+    "Wrong path, sorry!"
   end
 
 end

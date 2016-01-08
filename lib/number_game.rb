@@ -1,11 +1,11 @@
 class NumberGame
 
-  attr_accessor :guess
+  attr_accessor :guess, :target
 
-  def initialize(client)
+  def initialize
     @guess_counter = 0
     @guess = 0
-    @target = rand(10).to_s
+    @target = rand(10)
   end
 
   def game_get
@@ -14,13 +14,13 @@ class NumberGame
   end
 
   def game_post(input_params)
-    @guess = input_params.split("=")[1]
+    @guess = input_params.split("=")[1].to_i
     @guess_counter += 1
   end
 
   def compare_numbers
-    return "high" if guess > @target
-    return "low" if guess < @target
-    return "just right! Congrats!" if guess == @target
+    return "high" if guess > target
+    return "low" if guess < target
+    return "just right! Congrats!" if guess == target
   end
 end
