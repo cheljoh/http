@@ -16,13 +16,13 @@ class ServerResponseTest < Minitest::Test
     assert_equal "Please start a game", response.body[25..43]
   end
 
-  def test_bad_path_get
+  def test_bad_path_with_get_request
     client = Hurley::Client.new("http://127.0.0.1:9292")
     response = client.get("/laksjda;kldjas")
     assert_equal "Wrong path, sorry!", response.body[25..42]
   end
 
-  def test_bad_path_post
+  def test_bad_path_with_post_request
     client = Hurley::Client.new("http://127.0.0.1:9292")
     response = client.post("/laksjda;kldjas")
     assert_equal "Wrong path, sorry!", response.body[25..42]

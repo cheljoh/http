@@ -1,4 +1,5 @@
 require_relative 'parser'
+require_relative 'server_response'
 
 class ServerRequest
 

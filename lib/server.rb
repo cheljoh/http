@@ -11,5 +11,4 @@ class Server
 
 end
 
-
 server = Server.new
