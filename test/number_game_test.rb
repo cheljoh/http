@@ -11,7 +11,12 @@ class NumberGameTest < Minitest::Test
 
   def test_redirect
     client = Hurley::Client.new("http://127.0.0.1:9292")
+    response = client.post("/start_game")
+    assert_equal "Good Luck!", response.body[25..34]
+
+    client = Hurley::Client.new("http://127.0.0.1:9292")
     response = client.post("/game?guess=8")
+
     assert_equal "You have made", response.body[25..37]
   end
 

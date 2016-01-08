@@ -15,7 +15,7 @@ class ServerRequest
       @send_response.respond(client, parsed)
       client.close
 
-      break if parsed.path == "/shutdown"
+      break if parsed.path == "/shutdown" && parsed.verb == "GET"
     end
   end
 
